@@ -4,10 +4,10 @@ import SingleCard from './components/SingleCard'
 
 
 const cardImages = [
-  {"src": "/img/frog.jpg"},
-  {"src": "/img/ronaldo.jpg"},
-  {"src": "/img/valverde.jpg"},
-  {"src": "/img/raccoon.jpg"}
+  {"src": "/img/frog.jpg", matched: false},
+  {"src": "/img/ronaldo.jpg", matched: false},
+  {"src": "/img/valverde.jpg", matched: false},
+  {"src": "/img/raccoon.jpg", matched: false}
 ]
 
 function App() {
@@ -38,14 +38,23 @@ const handleChoice = (card) => {
 useEffect(() => {
   if (choiceOne && choiceTwo) {
     if(choiceOne.src === choiceTwo.src){
-      console.log("those cards match")
+      setCards(prevCards => {
+        return prevCards.map(card => {
+          if (card.src === choiceOne.src){
+            return {...card, matched: true}
+          } else{
+            return card
+          }
+        })
+      })
       resetTurn()
     } else {
-      console.log("those cards do not match")
-      resetTurn()
+      setTimeout(() => resetTurn(), 1000)
     }
   }
 }, [choiceOne, choiceTwo])
+
+console.log(cards)
 
 
 const resetTurn = () => {
@@ -66,7 +75,7 @@ const resetTurn = () => {
       <button onClick={shuffleCards}>Start Game</button>
       <div className="card-grid" >
         {cards.map(card=> (
-          <SingleCard key={card.id} card={card} handleChoice = {handleChoice}/>
+          <SingleCard key={card.id} card={card} handleChoice = {handleChoice} flipped = {card === choiceOne || card === choiceTwo || card.matched} />
         ))}
       </div>
     </div>
